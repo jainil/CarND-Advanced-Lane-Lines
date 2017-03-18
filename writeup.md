@@ -15,7 +15,7 @@ The goals / steps of this project are the following:
 
 [image1]: ./output_images/undistorted.png "Undistorted Chessboard"
 [image2]: ./output_images/test_undistorted.png "Road Transformed"
-[image3]: ./examples/binary_combo_example.jpg "Binary Example"
+[image3]: ./output_images/binary_output.jpg "Thresholded binary image"
 [image4]: ./examples/warped_straight_lines.jpg "Warp Example"
 [image5]: ./examples/color_fit_lines.jpg "Fit Visual"
 [image6]: ./examples/example_output.jpg "Output"
@@ -46,8 +46,8 @@ I applied the distortion correction with the correction matrix derived in the pr
 
 ![alt text][image2]
 
-####2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
+I used a combination of color and gradient thresholds to generate a binary image (fourth code cell in `advandced_lanes.ipynb`). I used the threshold values from the trials done in the lessons.  Here's an example of my output for this step.
 
 ![alt text][image3]
 
