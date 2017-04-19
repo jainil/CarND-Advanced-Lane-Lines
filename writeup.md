@@ -17,8 +17,8 @@ The goals / steps of this project are the following:
 [image2]: ./output_images/test_undistorted.png "Road Transformed"
 [image3]: ./output_images/binary_output.jpg "Thresholded binary image"
 [image4]: ./output_images/warped_output.jpg "Perspective transformed binary image"
-[image5]: ./examples/color_fit_lines.jpg "Fit Visual"
-[image6]: ./examples/example_output.jpg "Output"
+[image5]: ./output_images/color_fit_lines.jpg "Fit Visual"
+[image6]: ./output_images/example_output.jpg "Output"
 [video1]: ./project_video.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
@@ -53,24 +53,14 @@ I used a combination of color and gradient thresholds to generate a binary image
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform appears in the 3rd code cell of the IPython notebook.  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+The code for my perspective transform appears in the 3rd code cell of the IPython notebook.  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose to hardcode the source and destination points with the following mapping:
 
 ```
-offset = 30
-src = np.float32([[530, 500], [770, 500], [1120, 720], [220, 720]])
-
-dst = np.float32([[offset, offset],
-                  [img_size[0]-offset, offset],
-                  [img_size[0]-offset, img_size[1]],
-                  [offset, img_size[1]]
-                 ])
-
+[ 580.  450.] => [ 0.  0.]
+[ 705.  450.] => [ 1280.     0.]
+[ 1280.   720.] => [ 1280.   720.]
+[  60.  720.] => [   0.  720.]
 ```
-This resulted in the following source to destination point mapping:
-[ 530.  500.] => [ 30.  30.]
-[ 770.  500.] => [ 690.   30.]
-[ 1120.   720.] => [  690.  1280.]
-[ 220.  720.] => [   30.  1280.]
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
@@ -78,32 +68,38 @@ I verified that my perspective transform was working as expected by drawing the 
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+Then I used the histgram based lane detection(code cell 7) to detect the lane pixels and then fitted them to a second order polynomial, as seen below:
 
 ![alt text][image5]
 
-####5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+#### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+I implmented this in code cell 8.
 
-####6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
+#### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+I implemented this step in code cell 9.  Here is an example of my result on a test image:
 
 ![alt text][image6]
 
 ---
 
-###Pipeline (video)
+### Pipeline (video)
 
-####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
+#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
 Here's a [link to my video result](./project_video.mp4)
 
 ---
 
-###Discussion
+### Discussion
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+The approach I took for this project was fairly along the lines discussed in the tutorial sessions. The pipeline as it stands has a few brittle points(all made painfuly evident by the performance of this particular implementation on the challenge video):
+1. The determination of the perspective transform: The computation of the perspective transform matrix involves a manual predetermination step where I picked the source and destination points for the transform. This is very approximate measure and quite specific to the particular video frames under consideration.
+2. The parameters for thresholding the various gradients were also tuned by me to work for the test images. They may not be robust under conditions where the scene's colors and contrasts are drastically different.
+3. After application of the thresholding functions there may be too few (or none) points to fit an accurate polynomial for the lane lines.
+
+For points 1 and 3 above, I think one solution may be to initialize the detector with a conception of what straight lanes should look like given this camera and its mounting position on the car. This can then be used to create the source and destination point pairs for the perspective transform. Additionaly, this can be used as the fill-in for frames where the lane detection does not work well.
+For addressing point 2, we can make an adaptive system that tries a few different parameters and combinations of operators every once in a while to see what results in the clearest fit to lane lines. Also perhaps there is a better combination of parameters to try out than those I could test out for this project.
