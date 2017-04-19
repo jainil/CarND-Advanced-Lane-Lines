@@ -16,7 +16,7 @@ The goals / steps of this project are the following:
 [image1]: ./output_images/undistorted.png "Undistorted Chessboard"
 [image2]: ./output_images/test_undistorted.png "Road Transformed"
 [image3]: ./output_images/binary_output.jpg "Thresholded binary image"
-[image4]: ./output_images/warped_output.jpg "Perspective transformed binary image"
+[image4]: ./output_images/binary_warped.jpg "Perspective transformed binary image"
 [image5]: ./output_images/color_fit_lines.jpg "Fit Visual"
 [image6]: ./output_images/example_output.jpg "Output"
 [video1]: ./project_video.mp4 "Video"
